@@ -1,8 +1,8 @@
 package main
 
 import (
+	"blaze/utils"
 	"blaze/window"
-	"log"
 
 	"github.com/rivo/tview"
 )
@@ -10,9 +10,15 @@ import (
 var app = tview.NewApplication()
 
 func main() {
-	tree := window.Tree("../../Next/Lightning", []string{".vscode", ".git", "node_modules"})
+	defer func() {
+		if err := recover(); err != nil {
+			utils.Error(err)
+		}
+	}()
+
+	tree := window.Tree("../../Next/", []string{".vscode", ".git", ".next", "node_modules"})
 
 	if err := app.SetRoot(tree, true).Run(); err != nil {
-		log.Fatal("🔥 Blaze: Failed")
+		panic(err)
 	}
 }

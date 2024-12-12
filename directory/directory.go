@@ -7,10 +7,10 @@ import (
 
 type Directory []Node
 
-func Create(location string, ignored []string) Directory {
+func Create(location string, ignored []string, isRoot bool) Directory {
 	var directory Directory
 
-	nodes := utils.ReadRepository(location, ignored)
+	nodes := utils.ReadDir(location, ignored, isRoot)
 
 	for _, node := range nodes {
 		icon := ""
@@ -19,13 +19,11 @@ func Create(location string, ignored []string) Directory {
 			icon = "󰉋"
 		}
 
-		ref := path.Join(location, node.Name())
-
 		directory = append(directory, Node{
-			ref:   ref,
 			icon:  icon,
 			name:  node.Name(),
 			isDir: node.IsDir(),
+			ref:   path.Join(location, node.Name()),
 		})
 	}
 
