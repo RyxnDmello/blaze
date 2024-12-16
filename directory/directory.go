@@ -1,8 +1,9 @@
 package directory
 
 import (
-	"blaze/utils"
 	"path"
+
+	"blaze/utils"
 )
 
 type Directory []Node
@@ -10,7 +11,7 @@ type Directory []Node
 func Create(location string, ignored []string, isRoot bool) Directory {
 	var directory Directory
 
-	nodes := utils.ReadDir(location, ignored, isRoot)
+	nodes := utils.Directory(location, ignored, isRoot)
 
 	for _, node := range nodes {
 		icon := ""
@@ -22,8 +23,8 @@ func Create(location string, ignored []string, isRoot bool) Directory {
 		directory = append(directory, Node{
 			icon:  icon,
 			name:  node.Name(),
+			path:  path.Join(location, node.Name()),
 			isDir: node.IsDir(),
-			ref:   path.Join(location, node.Name()),
 		})
 	}
 

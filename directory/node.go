@@ -1,24 +1,24 @@
 package directory
 
 type Node struct {
-	name  string
 	icon  string
-	ref   string
+	name  string
+	path  string
 	isDir bool
 }
 
-func (node Node) Name() string {
-	return node.name
-}
-
-func (node Node) Icon() string {
+func (node *Node) Icon() string {
 	return node.icon
 }
 
-func (node Node) Reference() string {
-	return node.ref
+func (node *Node) Name() string {
+	return node.name
 }
 
-func (node Node) IsDir() bool {
+func (node *Node) Path() string {
+	return node.path
+}
+
+func (node *Node) IsDir() bool {
 	return node.isDir
 }
