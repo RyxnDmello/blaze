@@ -8,45 +8,25 @@ import (
 	"github.com/rivo/tview"
 )
 
-func Project(location string, ignored []string) (*tview.TreeView, *tview.TreeNode) {
-	root := add(tview.NewTreeNode(location), location, ignored, true)
-	tree := tview.NewTreeView().SetRoot(root).SetCurrentNode(root).SetTopLevel(1).SetGraphics(false)
+func Project(location string, ignored []string) *tview.TreeView {
+	root := Add(tview.NewTreeNode(location), location, ignored, true)
 
-	var active *tview.TreeNode
+	tree := tview.
+		NewTreeView().
+		SetRoot(root).
+		SetCurrentNode(root).
+		SetGraphics(false).
+		SetTopLevel(1)
 
-	tree.SetChangedFunc(func(node *tview.TreeNode) {
-		_, selectable := node.GetReference().(*directory.Node)
+	tree.
+		SetTitle("Project").
+		SetTitleAlign(tview.AlignTop).
+		SetBorder(true)
 
-		if !selectable {
-			return
-		}
-
-		active = node
-	})
-
-	tree.SetSelectedFunc(func(node *tview.TreeNode) {
-		reference, selectable := node.GetReference().(*directory.Node)
-
-		if !selectable || reference == nil {
-			return
-		}
-
-		children := node.GetChildren()
-
-		if len(children) == 0 {
-			add(node, reference.Path(), ignored, false)
-			return
-		}
-
-		node.SetExpanded(!node.IsExpanded())
-	})
-
-	tree.SetBorder(true)
-
-	return tree, active
+	return tree
 }
 
-func add(root *tview.TreeNode, location string, ignored []string, isRoot bool) *tview.TreeNode {
+func Add(root *tview.TreeNode, location string, ignored []string, isRoot bool) *tview.TreeNode {
 	directory := directory.Create(location, ignored, isRoot)
 
 	for _, item := range directory {

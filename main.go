@@ -1,7 +1,7 @@
 package main
 
 import (
-	"blaze/models"
+	"blaze/cmd"
 	"blaze/utils"
 
 	"github.com/rivo/tview"
@@ -16,9 +16,9 @@ func main() {
 		}
 	}()
 
-	project, _ := models.Project("../../Next/RyxnPortfolio", []string{".vscode", ".git", ".next", "node_modules"})
+	blaze := cmd.Blaze()
 
-	if err := app.SetRoot(project, true).Run(); err != nil {
+	if err := app.SetRoot(blaze, true).Run(); err != nil {
 		panic("An Unexpected Error Has Occurred")
 	}
 }
