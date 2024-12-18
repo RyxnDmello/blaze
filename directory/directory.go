@@ -14,10 +14,10 @@ func Create(location string, ignored []string, isRoot bool) Directory {
 	nodes := utils.Directory(location, ignored, isRoot)
 
 	for _, node := range nodes {
-		icon := ""
+		icon := "\uf016"
 
 		if node.IsDir() {
-			icon = "󰉋"
+			icon = "\ue5ff"
 		}
 
 		directory = append(directory, Node{

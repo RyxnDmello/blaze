@@ -19,8 +19,9 @@ func Project(location string, ignored []string) *tview.TreeView {
 		SetTopLevel(1)
 
 	tree.
-		SetTitle("Project").
+		SetTitle("  Project ").
 		SetTitleAlign(tview.AlignTop).
+		SetBorderPadding(1, 0, 1, 0).
 		SetBorder(true)
 
 	return tree

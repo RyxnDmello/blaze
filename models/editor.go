@@ -1,33 +1,28 @@
 package models
 
 import (
-	"os"
+	"blaze/editor"
 
 	"github.com/rivo/tview"
 )
 
 func Editor() *tview.TextArea {
-	editor := tview.
-		NewTextArea().
-		SetPlaceholder("No File Detected")
-
-	editor.
-		SetBorder(true).
-		SetBorderPadding(1, 1, 1, 1)
-
-	return editor
+	code := tview.NewTextArea()
+	return code
 }
 
-func SetTitle(editor *tview.TextArea, title string) {
-	editor.SetTitle(title).SetTitleAlign(tview.AlignLeft)
-}
+func Edit(code *tview.TextArea, path string, name string, isDir bool) {
+	file, text := editor.Reader(path, name, isDir)
 
-func Writer(path string) string {
-	text, err := os.ReadFile(path)
+	code.SetText(text, false)
 
-	if err != nil {
-		panic("Not A File")
-	}
+	code.SetChangedFunc(func() {
+		if !code.HasFocus() {
+			return
+		}
 
-	return string(text)
+		editor.Writer(path, code.GetText())
+	})
+
+	code.SetTitle(file).SetTitleAlign(tview.AlignLeft).SetBorder(true).SetBorderPadding(1, 0, 1, 0)
 }

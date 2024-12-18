@@ -16,7 +16,11 @@ func main() {
 		}
 	}()
 
-	blaze := cmd.Blaze()
+	project, editor := cmd.Blaze()
+
+	blaze := tview.NewGrid().
+		AddItem(project, 0, 0, 1, 1, 1, 1, true).
+		AddItem(editor, 0, 1, 1, 1, 1, 1, false)
 
 	if err := app.SetRoot(blaze, true).Run(); err != nil {
 		panic("An Unexpected Error Has Occurred")
