@@ -4,20 +4,15 @@ import (
 	"blaze/directory"
 	"blaze/models"
 
-	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
-)
-
-var (
-	project *tview.TreeView
-	editor  *tview.TextArea
 )
 
 var ignored = []string{".vscode", ".git", ".next", "node_modules"}
 
-func Blaze() (*tview.TreeView, *tview.TextArea) {
-	project = models.Project("../../Next/RyxnPortfolio", ignored)
-	editor = models.Editor()
+func Blaze(app *tview.Application) *tview.Grid {
+	path := models.Initialize()
+	project := models.Project(path, ignored)
+	editor := models.Editor()
 
 	project.SetSelectedFunc(func(node *tview.TreeNode) {
 		reference, ok := node.GetReference().(*directory.Node)
@@ -43,10 +38,14 @@ func Blaze() (*tview.TreeView, *tview.TextArea) {
 			return
 		}
 
-		node.SetTextStyle(tcell.StyleDefault.Bold(false))
-
 		models.Edit(editor, reference.Path(), reference.Name(), reference.IsDir())
 	})
 
-	return project, editor
+	layout := tview.NewGrid().
+		AddItem(project, 0, 0, 1, 1, 1, 1, true).
+		AddItem(editor, 0, 1, 1, 1, 1, 1, false)
+
+	models.Controls(app, project, editor)
+
+	return layout
 }

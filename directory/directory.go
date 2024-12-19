@@ -11,7 +11,7 @@ type Directory []Node
 func Create(location string, ignored []string, isRoot bool) Directory {
 	var directory Directory
 
-	nodes := utils.Directory(location, ignored, isRoot)
+	nodes := utils.Dir(location, ignored, isRoot)
 
 	for _, node := range nodes {
 		icon := "\uf016"

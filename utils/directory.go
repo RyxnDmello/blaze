@@ -6,30 +6,16 @@ import (
 	"slices"
 )
 
-func Directory(path string, ignored []string, isRoot bool) []fs.DirEntry {
+func Dir(path string, ignored []string, isRoot bool) []fs.DirEntry {
 	items, err := os.ReadDir(path)
 
 	if isRoot && err != nil {
 		panic("Invalid Path Provided")
 	}
 
-	if isRoot && !valid(items) {
-		panic("Not Git Repository")
-	}
-
 	items = ignore(items, ignored)
 
 	return order(items)
-}
-
-func valid(items []fs.DirEntry) bool {
-	for _, item := range items {
-		if item.Name() == ".git" {
-			return true
-		}
-	}
-
-	return false
 }
 
 func ignore(items []fs.DirEntry, ignored []string) []fs.DirEntry {

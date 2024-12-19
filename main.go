@@ -12,17 +12,13 @@ var app = tview.NewApplication()
 func main() {
 	defer func() {
 		if err := recover(); err != nil {
-			utils.Error(err)
+			utils.Error(app, err)
 		}
 	}()
 
-	project, editor := cmd.Blaze()
+	layout := cmd.Blaze(app)
 
-	blaze := tview.NewGrid().
-		AddItem(project, 0, 0, 1, 1, 1, 1, true).
-		AddItem(editor, 0, 1, 1, 1, 1, 1, false)
-
-	if err := app.SetRoot(blaze, true).Run(); err != nil {
+	if err := app.SetRoot(layout, true).Run(); err != nil {
 		panic("An Unexpected Error Has Occurred")
 	}
 }
