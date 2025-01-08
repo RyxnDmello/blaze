@@ -13,7 +13,7 @@ go.work.sum
 *.dylib
 
 # Test/Coverage
-*.test
+test
 *.out
 
 # Dependency Directories
