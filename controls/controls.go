@@ -8,7 +8,14 @@ import (
 	"github.com/rivo/tview"
 )
 
-func InitializeControls(app *tview.Application, pages *tview.Pages, project *tview.TreeView, projectModal *tview.Flex, editor *tview.TextArea) {
+func InitializeControls(
+	app *tview.Application,
+	pages *tview.Pages,
+	project *tview.TreeView,
+	editor *tview.TextArea,
+	createNodeModal *tview.Flex,
+	deleteNodeModal *tview.Flex,
+) {
 	app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		switch event.Key() {
 		case tcell.KeyCtrlE:
@@ -30,16 +37,24 @@ func InitializeControls(app *tview.Application, pages *tview.Pages, project *tvi
 				break
 			}
 
-			if projectModal.HasFocus() {
-				pages.SendToBack("MODAL").HidePage("MODAL")
+			if createNodeModal.HasFocus() {
+				pages.SendToBack("CREATE_NODE_MODAL").HidePage("CREATE_NODE_MODAL")
 				break
 			}
 
-			pages.SendToFront("MODAL").ShowPage("MODAL")
+			pages.SendToFront("CREATE_NODE_MODAL").ShowPage("CREATE_NODE_MODAL")
+
+		case tcell.KeyCtrlD:
+			if deleteNodeModal.HasFocus() {
+				pages.SendToBack("DELETE_NODE_MODAL").HidePage("DELETE_NODE_MODAL")
+				break
+			}
+
+			pages.SendToFront("DELETE_NODE_MODAL").ShowPage("DELETE_NODE_MODAL")
 
 		case tcell.KeyEsc:
-			if projectModal.HasFocus() {
-				pages.SendToBack("MODAL").HidePage("MODAL")
+			if createNodeModal.HasFocus() {
+				pages.SendToBack("CREATE_NODE_MODAL").HidePage("CREATE_NODE_MODAL")
 				break
 			}
 

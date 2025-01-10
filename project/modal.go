@@ -5,6 +5,10 @@ import (
 	"github.com/rivo/tview"
 )
 
+func Preview(text string) {
+
+}
+
 func Input(handleAccept func(textToCheck string, lastChar rune) bool, handleChange func(event *tcell.EventKey) *tcell.EventKey) *tview.InputField {
 	input := tview.
 		NewInputField().
@@ -22,6 +26,19 @@ func Input(handleAccept func(textToCheck string, lastChar rune) bool, handleChan
 }
 
 func CreateButton(accept func(event *tcell.EventKey) *tcell.EventKey) *tview.Button {
+	button := tview.
+		NewButton("Create").
+		SetStyle(tcell.StyleDefault.Background(tcell.ColorBlack)).
+		SetActivatedStyle(tcell.StyleDefault.Background(tcell.ColorBlack))
+
+	button.
+		SetBorder(true).
+		SetInputCapture(accept)
+
+	return button
+}
+
+func DeleteButton(accept func(event *tcell.EventKey) *tcell.EventKey) *tview.Button {
 	button := tview.
 		NewButton("Create").
 		SetStyle(tcell.StyleDefault.Background(tcell.ColorBlack)).

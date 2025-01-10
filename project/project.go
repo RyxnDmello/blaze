@@ -26,7 +26,7 @@ func InitializeProject(location string, ignored []string) *tview.TreeView {
 	return project
 }
 
-func CreateModal(app *tview.Application, project *tview.TreeView) *tview.Flex {
+func CreateNodeModal(app *tview.Application, project *tview.TreeView) *tview.Flex {
 	input := Input(
 		func(textToCheck string, lastChar rune) bool {
 			return true
@@ -51,6 +51,47 @@ func CreateModal(app *tview.Application, project *tview.TreeView) *tview.Flex {
 	form.
 		SetBorder(true).
 		SetTitle(" Add File ").
+		SetTitleAlign(tview.AlignLeft).
+		SetBorderPadding(0, 0, 1, 1).
+		SetBackgroundColor(tcell.ColorBlack)
+
+	alignment := tview.NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(nil, 0, 1, false).
+		AddItem(form, 8, 1, true).
+		AddItem(nil, 0, 1, false)
+
+	modal := tview.NewFlex().
+		AddItem(nil, 0, 1, false).
+		AddItem(alignment, 0, 1, true).
+		AddItem(nil, 0, 1, false)
+
+	return modal
+}
+
+func DeleteNodeModal(app *tview.Application, project *tview.TreeView) *tview.Flex {
+	warning := tview.
+		NewTextView().
+		SetText("Do you want to proceed?").
+		SetTextAlign(tview.AlignCenter)
+
+	warning.SetBorder(true)
+
+	delete := DeleteButton(
+		func(event *tcell.EventKey) *tcell.EventKey {
+			return event
+		},
+	)
+
+	form := tview.NewGrid().
+		SetRows(0, 3).
+		SetColumns(0).
+		AddItem(warning, 0, 0, 1, 1, 0, 0, false).
+		AddItem(delete, 1, 0, 1, 1, 0, 0, true)
+
+	form.
+		SetBorder(true).
+		SetTitle(" Delete File ").
 		SetTitleAlign(tview.AlignLeft).
 		SetBorderPadding(0, 0, 1, 1).
 		SetBackgroundColor(tcell.ColorBlack)
