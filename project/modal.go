@@ -5,8 +5,15 @@ import (
 	"github.com/rivo/tview"
 )
 
-func Preview(text string) {
+func Preview(text string) *tview.TextView {
+	preview := tview.
+		NewTextView().
+		SetText(text).
+		SetTextAlign(tview.AlignCenter)
 
+	preview.SetBorder(true)
+
+	return preview
 }
 
 func Input(handleAccept func(textToCheck string, lastChar rune) bool, handleChange func(event *tcell.EventKey) *tcell.EventKey) *tview.InputField {

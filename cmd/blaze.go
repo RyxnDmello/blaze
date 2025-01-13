@@ -37,14 +37,15 @@ func Blaze(app *tview.Application) *tview.Pages {
 			return
 		}
 
-		children := node.GetChildren()
-
-		if len(children) == 0 {
-			PROJECT.AddDirectory(node, reference.Path(), ignored, false)
+		if node.IsExpanded() {
+			node.SetExpanded(false).ClearChildren()
 			return
 		}
 
-		node.SetExpanded(!node.IsExpanded())
+		if !node.IsExpanded() {
+			PROJECT.AddDirectory(node, reference.Path(), ignored, false)
+			node.SetExpanded(true)
+		}
 	})
 
 	project.SetChangedFunc(func(node *tview.TreeNode) {

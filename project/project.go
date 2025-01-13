@@ -2,6 +2,9 @@ package project
 
 import (
 	"fmt"
+	"os"
+	"path"
+	"strings"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
@@ -27,17 +30,55 @@ func InitializeProject(location string, ignored []string) *tview.TreeView {
 }
 
 func CreateNodeModal(app *tview.Application, project *tview.TreeView) *tview.Flex {
-	input := Input(
+	var input *tview.InputField
+	var create *tview.Button
+
+	input = Input(
 		func(textToCheck string, lastChar rune) bool {
+			if parts := strings.Split(textToCheck, "."); len(parts) > 3 {
+				input.SetFieldTextColor(tcell.ColorRed)
+				return true
+			}
+
+			input.SetFieldTextColor(tcell.ColorWhite)
+
 			return true
 		},
 		func(event *tcell.EventKey) *tcell.EventKey {
+			if event.Key() == tcell.KeyTab {
+				app.SetFocus(create)
+			}
+
 			return event
 		},
 	)
 
-	create := CreateButton(
+	create = CreateButton(
 		func(event *tcell.EventKey) *tcell.EventKey {
+			if event.Key() == tcell.KeyEnter {
+				reference, ok := project.GetCurrentNode().GetReference().(*Node)
+
+				if !ok {
+					input.SetFieldTextColor(tcell.ColorRed)
+					return event
+				}
+
+				path := path.Join(reference.path, input.GetText())
+
+				_, err := os.Create(path)
+
+				if err != nil {
+					input.SetFieldTextColor(tcell.ColorRed)
+					return event
+				}
+
+				input.SetText("")
+			}
+
+			if event.Key() == tcell.KeyTab {
+				app.SetFocus(input)
+			}
+
 			return event
 		},
 	)
@@ -70,15 +111,27 @@ func CreateNodeModal(app *tview.Application, project *tview.TreeView) *tview.Fle
 }
 
 func DeleteNodeModal(app *tview.Application, project *tview.TreeView) *tview.Flex {
-	warning := tview.
-		NewTextView().
-		SetText("Do you want to proceed?").
-		SetTextAlign(tview.AlignCenter)
+	var preview *tview.TextView
+	var delete *tview.Button
 
-	warning.SetBorder(true)
+	preview = Preview("Do you want to proceed?")
 
-	delete := DeleteButton(
+	delete = DeleteButton(
 		func(event *tcell.EventKey) *tcell.EventKey {
+			if event.Key() == tcell.KeyEnter {
+				reference, ok := project.GetCurrentNode().GetReference().(*Node)
+
+				if !ok {
+					panic("Crashed Unexpectedly")
+				}
+
+				err := os.Remove(reference.path)
+
+				if err != nil {
+					panic("Crashed Unexpectedly")
+				}
+			}
+
 			return event
 		},
 	)
@@ -86,7 +139,7 @@ func DeleteNodeModal(app *tview.Application, project *tview.TreeView) *tview.Fle
 	form := tview.NewGrid().
 		SetRows(0, 3).
 		SetColumns(0).
-		AddItem(warning, 0, 0, 1, 1, 0, 0, false).
+		AddItem(preview, 0, 0, 1, 1, 0, 0, false).
 		AddItem(delete, 1, 0, 1, 1, 0, 0, true)
 
 	form.
@@ -119,7 +172,8 @@ func AddDirectory(root *tview.TreeNode, location string, ignored []string, isRoo
 		node := tview.
 			NewTreeNode(fmt.Sprintf("%s %s", item.Icon(), item.Name())).
 			SetReference(&reference).
-			SetSelectable(true)
+			SetSelectable(true).
+			SetExpanded(false)
 
 		root.AddChild(node)
 	}
